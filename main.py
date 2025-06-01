@@ -8,8 +8,7 @@ import threading
 import numpy as np
 import os
 import utils
-pygame.init()
-screen = pygame.display.set_mode((500, 500))
+
 
 os.makedirs("src", exist_ok=True)
 os.makedirs("beatmaps", exist_ok=True)
@@ -20,8 +19,7 @@ os.makedirs("beatmaps", exist_ok=True)
 background_color_decrease = 10
 helper_line_color_decrease = 10
 
-WIDTH = screen.get_width()
-HEIGHT = screen.get_height()
+
 NOTE_HEIGHT = 100
 NOTE_WIDTH = 50
 
@@ -92,7 +90,10 @@ print(beatmap["tempo"])
 print(beatmap["harmonic_amp"])
 
 
-
+pygame.init()
+screen = pygame.display.set_mode((500, 500))
+WIDTH = screen.get_width()
+HEIGHT = screen.get_height()
 
 BASE_BPM = 120
 BASE_FALL_TIME = 0.5
