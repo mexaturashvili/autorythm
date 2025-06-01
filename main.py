@@ -14,16 +14,33 @@ screen = pygame.display.set_mode((500, 500))
 os.makedirs("src", exist_ok=True)
 os.makedirs("beatmaps", exist_ok=True)
 
-font_size = 36
-background_emoticon_scale = 0
 
 
 
+background_color_decrease = 10
+helper_line_color_decrease = 10
 
 WIDTH = screen.get_width()
 HEIGHT = screen.get_height()
 NOTE_HEIGHT = 100
 NOTE_WIDTH = 50
+
+
+target_helper_line_color = (0, 0, 0)
+target_background_color = (255, 255, 255)
+
+
+background_emoticon_font_size = 36
+background_emoticon_scale = 0
+helper_line_color = target_helper_line_color
+background_color = target_background_color
+
+
+
+
+
+
+
 
 fn = input("enter beatmap (.mp3) name: ")
 
@@ -178,13 +195,19 @@ dt = 0
 
 running = True
 clock = pygame.time.Clock()
-font = pygame.font.SysFont("Arial", font_size)
+font = pygame.font.SysFont("Arial", background_emoticon_font_size)
 text = font.render(f":3", True, (255, 255, 255))
 
+pad1_rect = pygame.Rect(WIDTH//2 - NOTE_WIDTH, HEIGHT - NOTE_HEIGHT // 2 - 5/2, NOTE_WIDTH, 5)
+pad2_rect = pygame.Rect(WIDTH//2, HEIGHT - NOTE_HEIGHT // 2 - 5/2, NOTE_WIDTH, 5)
+helper_line_rect = pygame.Rect(0, HEIGHT - NOTE_HEIGHT // 2 - 5/2, WIDTH, 5)
+
+pad1_active = False
+pad2_active = False
 
 
 while running:
-	screen.fill((0, 0, 0))
+	screen.fill(background_color)
 	
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -227,17 +250,19 @@ while running:
 
 	keys = pygame.key.get_pressed()
 
-	
-	pad1_active = keys[pygame.K_f]
-	pad2_active = keys[pygame.K_j]
-
-	pad1_rect = pygame.Rect(WIDTH//2 - NOTE_WIDTH, HEIGHT - NOTE_HEIGHT // 2 - 5/2, NOTE_WIDTH, 5)
-	pad2_rect = pygame.Rect(WIDTH//2, HEIGHT - NOTE_HEIGHT // 2 - 5/2, NOTE_WIDTH, 5)
 
 
-	pygame.draw.rect(screen, (50, 50, 50), rect=pygame.Rect(0, HEIGHT - NOTE_HEIGHT // 2 - 5/2, WIDTH, 5))
+
+	if any(helper_line_rect.colliderect(note.rect) for note in notes):
+		helper_line_color = target_helper_line_color
+		background_color = target_background_color
 
 	
+	pygame.draw.rect(screen, helper_line_color, rect=helper_line_rect)
+	helper_line_color = (utils.clamp(helper_line_color[0] + helper_line_color_decrease, target_helper_line_color[0], 255), utils.clamp(helper_line_color[1] + helper_line_color_decrease, target_helper_line_color[1], 255), utils.clamp(helper_line_color[2] + helper_line_color_decrease, target_helper_line_color[2], 255))
+	background_color = (utils.clamp(background_color[0] - background_color_decrease, 0, target_background_color[0]), utils.clamp(background_color[1] - background_color_decrease, 0, target_background_color[1]), utils.clamp(background_color[2] - background_color_decrease, 0, target_background_color[2]))
+
+
 	if pad1_active:
 		pygame.draw.rect(screen, (255, 0, 0), rect=pad1_rect)
 	

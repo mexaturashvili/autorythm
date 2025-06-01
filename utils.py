@@ -3,6 +3,9 @@ import librosa
 import json
 import os
 
+def clamp(value, min_value, max_value):
+    return max(min_value, min(value, max_value))
+
 
 def tolist_if_array(val):
     if isinstance(val, np.ndarray):
